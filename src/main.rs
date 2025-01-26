@@ -9,6 +9,10 @@ fn main() {
     match read_csv_file(file_path) {
         Ok(records) => {
             println!("Successfully read {} records:", records.len());
+            //Loop over the data structure and output the record data on screen.
+            for record in records.iter() {
+                println!("{:?}", record);
+            }
         }
         Err(e) => {
             eprintln!("Error reading file: {}", e);
