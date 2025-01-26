@@ -1,0 +1,6 @@
+[package]
+name = "CST8002_PracticalProject_010_PawineeMahantamak"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

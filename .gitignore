@@ -1,0 +1,47 @@
+# Rust-specific
+/target/
+**/*.rs.bk
+
+# If you use Cargo, these files are generated during builds and should not be committed
+Cargo.lock
+Cargo.toml.orig
+
+# Dependencies
+/.cargo/
+
+# Debugging tools
+*.dSYM
+*.ll
+*.bc
+
+# Output of `cargo test` with `--nocapture`
+test-output.txt
+
+# Logs
+*.log
+
+# Editor-specific
+# IntelliJ IDEA
+.idea/
+/*.iml
+
+# VS Code
+.vscode/
+/*.code-workspace
+
+# Vim
+*.swp
+*.swo
+*.swn
+.session
+
+# Emacs
+*~
+\#*\#
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
