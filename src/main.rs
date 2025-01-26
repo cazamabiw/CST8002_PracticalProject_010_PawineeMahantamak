@@ -1,26 +1,19 @@
 //Author: Pawinee Mahantamak
-use CST8002_PracticalProject_010_PawineeMahantamak::{
-    natural_gas_liquid_export::NaturalGasLiquidExport,
-   };
+use CST8002_PracticalProject_010_PawineeMahantamak::utility::csv_reader::read_csv_file;
+
 fn main() {
-    //Create a record object
-    let record = NaturalGasLiquidExport::new(
-        "01-01-90".to_string(),
-        1990,
-        "January".to_string(),
-        "Butane".to_string(),
-        "Alberta".to_string(),
-        "PADD II".to_string(),
-        "Railway".to_string(),
-        995.0,
-        6258.351,
-        131571.5,
-        113223.7964,
-        13.223266,
-        42.732711,
-    );
-    // Access data using getters
-    println!("Period: {}", record.period());
-    println!("Year: {}", record.year());
+
+    //Open and read the dataset
+    let file_path = "data/natural-gas-liquids-exports-monthly.csv";
+
+    match read_csv_file(file_path) {
+        Ok(records) => {
+            println!("Successfully read {} records:", records.len());
+        }
+        Err(e) => {
+            eprintln!("Error reading file: {}", e);
+        }
+    }
+
 
 }
