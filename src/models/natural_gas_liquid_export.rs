@@ -1,4 +1,15 @@
-//Author: Pawinee Mahantamak
+/* 
+Author: Pawinee Mahantamak
+Course: CST8002 - Practical Project 1
+Professor: Stanley Pieda
+Due Date: 2025-01-26
+*/
+
+/* Description:
+This struct holds data about natural gas liquid exports. It includes fields for the period, year, 
+month, product, origin, destination, transportation mode, and various financial and volume details. 
+It provides methods for creating a new record, accessing field values, and setting or updating those fields.
+*/
 #[derive(Debug)]
 pub struct NaturalGasLiquidExport {
     period: String,

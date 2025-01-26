@@ -1,4 +1,16 @@
-//Author: Pawinee Mahantamak
+/* 
+Author: Pawinee Mahantamak
+Course: CST8002 - Practical Project 1
+Professor: Stanley Pieda
+Due Date: 2025-01-26
+*/
+
+/* Description:
+This function reads a CSV file containing natural gas liquid export data. It decodes the file to UTF-8, 
+parses each record into `NaturalGasLiquidExport` objects, and stores them in a vector. If any errors 
+occur while reading or parsing the file, they are logged.
+*/
+
 use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
