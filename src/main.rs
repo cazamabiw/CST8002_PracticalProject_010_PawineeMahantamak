@@ -43,7 +43,7 @@ fn main() {
     };
 
     /// Launches the CLI-based menu for user interaction
-    show_menu(&mut records, file_path);
+    show_menu(file_path);
  
 
 }

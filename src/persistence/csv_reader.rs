@@ -34,7 +34,7 @@ use crate::models::natural_gas_liquid_export::{NaturalGasLiquidExport, NATURALGA
 /// * Skips malformed records that do not match expected column count.
 /// * Logs errors but continues reading the remaining records.
 pub fn read_csv_file(file_path: &str) -> Result<Vec<NaturalGasLiquidExport>, Box<dyn Error>> {
-    let mut records = Vec::new();
+    let mut records: Vec<NaturalGasLiquidExport> = Vec::new();
 
     // Open the file
     let file = File::open(file_path)?;

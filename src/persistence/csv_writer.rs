@@ -60,7 +60,7 @@ pub fn write_csv_file(records: &[NaturalGasLiquidExport]) -> Result<String, Box<
     }
 
     wtr.flush()?; // Ensure data is written to file
-    println!("✅ Data successfully written to {}", file_path);
+    println!("Data successfully written to {}", file_path);
 
     Ok(file_path)
 }

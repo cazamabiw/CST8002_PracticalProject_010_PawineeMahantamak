@@ -32,16 +32,18 @@ use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 /// * Provides a menu with options for managing records.
 /// * Calls appropriate business layer functions for each operation.
 /// * Handles invalid input gracefully.
-pub fn show_menu(records: &mut Vec<NaturalGasLiquidExport>, file_path: &str) {
+pub fn show_menu(file_path: &str) {
+    let records = load_initial_data(file_path).unwrap();
+
     loop {
+        println!("\n Program by Pawinee Mahantamak");
         println!("\n=== Natural Gas Liquid Export Management ===");
-        println!("1. Reload Data from CSV");
-        println!("2. Display Records");
-        println!("3. Create a New Record");
-        println!("4. Edit a Record");
-        println!("5. Delete a Record");
-        println!("6. Save Data to CSV");
-        println!("7. Exit");
+        println!("1. Display Records");
+        println!("2. Create a New Record");
+        println!("3. Edit a Record");
+        println!("4. Delete a Record");
+        println!("5. Save Data to CSV");
+        println!("6. Exit");
         print!("Select an option: ");
         io::stdout().flush().unwrap();
 
@@ -49,16 +51,7 @@ pub fn show_menu(records: &mut Vec<NaturalGasLiquidExport>, file_path: &str) {
         io::stdin().read_line(&mut choice).unwrap();
         match choice.trim() {
             "1" => {
-                match reload_data(file_path) {
-                    Ok(new_records) => {
-                        *records = new_records;
-                        println!("Data reloaded successfully.");
-                    }
-                    Err(e) => println!("Error reloading data: {}", e),
-                }
-            }
-            "2" => {
-                println!("How many records would you like to display? ");
+                println!("Enter number of records to display: ");
                 let mut num_records = String::new();
                 io::stdin().read_line(&mut num_records).unwrap();
                 if let Ok(limit) = num_records.trim().parse::<usize>() {
@@ -67,45 +60,52 @@ pub fn show_menu(records: &mut Vec<NaturalGasLiquidExport>, file_path: &str) {
                     println!("Invalid number.");
                 }
             }
-            "3" => {
-                println!("Enter details for the new record:");
+            "2" => {
                 let new_record = create_record_interactively();
-                records.push(new_record);
-                println!("Record added successfully.");
+                add_record(new_record);
             }
-            "4" => {
+            "3" => {
                 println!("Enter the index of the record to edit:");
                 let mut index_str = String::new();
                 io::stdin().read_line(&mut index_str).unwrap();
+            
                 if let Ok(index) = index_str.trim().parse::<usize>() {
-                    if index < records.len() {
-                        println!("Editing record at index {}...", index);
-                        let updated_record = create_record_interactively();
-                        edit_record(records, index, updated_record);
+                    let total_records = records.len(); // Get latest record count
+            
+                    if index == 0 || index > total_records {
+                        println!("Invalid index. Please enter a value between 1 and {}.", total_records);
                     } else {
-                        println!("Invalid index.");
+                        let updated_record = create_record_interactively();
+                        edit_record(index, updated_record);
                     }
                 } else {
-                    println!("Invalid input.");
+                    println!("Invalid input. Please enter a valid number.");
                 }
             }
-            "5" => {
+            "4" => {
                 println!("Enter the index of the record to delete:");
                 let mut index_str = String::new();
                 io::stdin().read_line(&mut index_str).unwrap();
+            
                 if let Ok(index) = index_str.trim().parse::<usize>() {
-                    delete_record(records, index);
+                    let total_records = records.len(); // Get latest record count
+            
+                    if index == 0 || index > total_records {
+                        println!("Invalid index. Please enter a value between 1 and {}.", total_records);
+                    } else {
+                        delete_record(index);
+                    }
                 } else {
-                    println!("Invalid input.");
+                    println!("Invalid input. Please enter a valid number.");
                 }
             }
-            "6" => {
-                match write_csv_file(&records) {
+            "5" => {
+                match write_csv_file(records) {
                     Ok(output_file) => println!("Data saved to {}", output_file),
                     Err(e) => println!("Error saving data: {}", e),
                 }
             }
-            "7" => {
+            "6" => {
                 println!("Exiting program...");
                 break;
             }
@@ -113,7 +113,6 @@ pub fn show_menu(records: &mut Vec<NaturalGasLiquidExport>, file_path: &str) {
         }
     }
 }
-
 /// Prompts the user for input and creates a new `NaturalGasLiquidExport` record interactively.
 ///
 /// # Returns
@@ -123,6 +122,7 @@ pub fn show_menu(records: &mut Vec<NaturalGasLiquidExport>, file_path: &str) {
 /// * Asks the user for each field's value.
 /// * Converts numerical fields safely, using default values if input is invalid.
 fn create_record_interactively() -> NaturalGasLiquidExport {
+    let mut input = String::new();
     
     fn prompt(text: &str) -> String {
         let mut input = String::new();
@@ -142,7 +142,7 @@ fn create_record_interactively() -> NaturalGasLiquidExport {
         prompt("Enter mode of transport: "),
         prompt("Enter volume (m³): ").parse::<f64>().unwrap_or(0.0),
         prompt("Enter volume (bbl): ").parse::<f64>().unwrap_or(0.0),
-        prompt("Enter value (CAD$): ").parse::<f64>().unwrap_or(0.0),
+        prompt("Enter value (CN$): ").parse::<f64>().unwrap_or(0.0),
         prompt("Enter value (USD$): ").parse::<f64>().unwrap_or(0.0),
         prompt("Enter price per L (CN cents): ").parse::<f64>().unwrap_or(0.0),
         prompt("Enter price per gallon (US cents): ").parse::<f64>().unwrap_or(0.0),
