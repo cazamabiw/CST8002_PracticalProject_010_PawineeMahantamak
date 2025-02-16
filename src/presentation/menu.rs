@@ -100,7 +100,6 @@ pub fn show_menu(records: &mut Vec<NaturalGasLiquidExport>, file_path: &str) {
 
 /// Helper function to create a record interactively
 fn create_record_interactively() -> NaturalGasLiquidExport {
-    let mut input = String::new();
     
     fn prompt(text: &str) -> String {
         let mut input = String::new();

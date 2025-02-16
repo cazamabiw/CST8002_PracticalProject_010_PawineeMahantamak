@@ -14,8 +14,10 @@ reading or parsing the file. The developer’s name is displayed at the top of t
 mod persistence; // Declare persistence module
 
 use cst8002_practical_project_010_pawinee_mahantamak::models;
+use cst8002_practical_project_010_pawinee_mahantamak::models::natural_gas_liquid_export::NaturalGasLiquidExport;
+use cst8002_practical_project_010_pawinee_mahantamak::presentation::menu::show_menu;
 use persistence::csv_reader::read_csv_file;
-use persistence::csv_writer::write_csv_file;
+
 
 fn main() {
 
@@ -25,28 +27,22 @@ fn main() {
      //Display my full name (always visible)
     const MY_FULL_NAME: &str = "Pawinee Mahantamak";
    
-
-    println!("Testing CSV Read...");
-
-    match read_csv_file(file_path) {
-        Ok(records) => {
-            println!("Successfully read {} records!", records.len());
-            if records.is_empty() {
-                println!("Warning: No records found in the dataset.");
-            } else {
-                println!("Sample Record: {:?}", records[0]); // Print one record
-            }
-
-            println!("\nTesting CSV Write...");
-            match write_csv_file(&records) {
-                Ok(output_file) => println!("Data saved successfully to: {}", output_file),
-                Err(e) => eprintln!("Error writing CSV: {}", e),
-            }
+    println!("Author: {}", MY_FULL_NAME);
+    // Initialize dataset (load up to 100 records)
+    let mut records: Vec<NaturalGasLiquidExport> = match read_csv_file(file_path) {
+        Ok(mut records) => {
+            records.truncate(100); // Limit to 100 records
+            println!("Successfully loaded {} records!", records.len());
+            records
         }
         Err(e) => {
-            eprintln!("Error reading file: {}", e);
+            eprintln!("Error loading dataset: {}", e);
+            Vec::new()
         }
-    }
-    println!("Author: {}", MY_FULL_NAME);
+    };
+
+    // Start interactive menu
+    show_menu(&mut records, file_path);
+ 
 
 }
