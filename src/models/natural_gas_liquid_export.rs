@@ -32,7 +32,7 @@ impl NaturalGasLiquidExport {
     pub fn new(
         period: String,
         year: u16,
-        month: String,
+        month: String                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,
         product: String,
         origin: String,
         destination: String,
