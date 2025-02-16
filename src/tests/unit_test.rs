@@ -22,6 +22,12 @@ mod tests {
     use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
     use crate::business::manager::{create_record, edit_record, delete_record};
 
+    /// Comprehensive test covering multiple aspects:
+    /// - Reads CSV and checks if data is parsed correctly.
+    /// - Adds a new record and verifies it was added.
+    /// - Updates an existing record and checks changes.
+    /// - Deletes a record and confirms removal.
+    /// - Handles missing file gracefully.
     #[test]
     fn test_csv_operations_and_data_modifications() {
         let valid_file = "data/natural-gas-liquids-exports-monthly.csv";

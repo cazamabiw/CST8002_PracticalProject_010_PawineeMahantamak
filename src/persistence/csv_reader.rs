@@ -5,12 +5,12 @@ Professor: Stanley Pieda
 Due Date: 2025-02-16
 */
 
-/* 
-Description:
-This function reads a CSV file containing natural gas liquid export data. 
-It decodes the file to UTF-8, parses each record into `NaturalGasLiquidExport` 
-objects, and stores them in a vector. If any errors occur while reading 
-or parsing the file, they are logged.
+/*! 
+# CSV Reader Module (`csv_reader.rs`)
+This module provides functionality for reading CSV files 
+containing natural gas liquid export data. It parses each record 
+into `NaturalGasLiquidExport` objects and handles missing or 
+malformed records gracefully.
 */
 
 use std::error::Error;
@@ -22,6 +22,17 @@ use csv::ReaderBuilder;
 use crate::models::natural_gas_liquid_export::{NaturalGasLiquidExport, NATURALGASLIQUID_HEADERS};
 
 /// Reads a CSV file and returns a vector of `NaturalGasLiquidExport` objects.
+///
+/// # Arguments
+/// * `file_path` - The path to the CSV file.
+///
+/// # Returns
+/// * `Ok(Vec<NaturalGasLiquidExport>)` - A vector of successfully parsed records.
+/// * `Err(Box<dyn Error>)` - An error if file reading or parsing fails.
+///
+/// # Behavior
+/// * Skips malformed records that do not match expected column count.
+/// * Logs errors but continues reading the remaining records.
 pub fn read_csv_file(file_path: &str) -> Result<Vec<NaturalGasLiquidExport>, Box<dyn Error>> {
     let mut records = Vec::new();
 
