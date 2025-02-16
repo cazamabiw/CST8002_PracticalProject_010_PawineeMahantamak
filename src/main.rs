@@ -11,7 +11,11 @@ parses the data into structured records, and displays them. It handles errors wh
 reading or parsing the file. The developer’s name is displayed at the top of the output.
 */
 
-use CST8002_PracticalProject_010_PawineeMahantamak::utility::csv_reader::read_csv_file;
+mod persistence; // Declare persistence module
+
+use cst8002_practical_project_010_pawinee_mahantamak::models;
+use persistence::csv_reader::read_csv_file;
+use persistence::csv_writer::write_csv_file;
 
 fn main() {
 
@@ -22,14 +26,22 @@ fn main() {
     const MY_FULL_NAME: &str = "Pawinee Mahantamak";
    
 
+    println!("Testing CSV Read...");
+
     match read_csv_file(file_path) {
         Ok(records) => {
-
-            //Loop over the data structure and output the record data on screen.
-            for record in records.iter() {
-                println!("{:?}", record);
+            println!("Successfully read {} records!", records.len());
+            if records.is_empty() {
+                println!("Warning: No records found in the dataset.");
+            } else {
+                println!("Sample Record: {:?}", records[0]); // Print one record
             }
-            println!("Successfully read {} records", records.len());
+
+            println!("\nTesting CSV Write...");
+            match write_csv_file(&records) {
+                Ok(output_file) => println!("Data saved successfully to: {}", output_file),
+                Err(e) => eprintln!("Error writing CSV: {}", e),
+            }
         }
         Err(e) => {
             eprintln!("Error reading file: {}", e);
