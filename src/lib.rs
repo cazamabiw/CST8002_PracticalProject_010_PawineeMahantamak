@@ -8,3 +8,4 @@ pub mod models;
 pub mod persistence;
 pub mod business;
 pub mod presentation;
+pub mod tests;
