@@ -35,3 +35,11 @@ pub fn edit_record(records: &mut Vec<NaturalGasLiquidExport>, index: usize, upda
         println!("Invalid index. No record updated.");
     }
 }
+pub fn delete_record(records: &mut Vec<NaturalGasLiquidExport>, index: usize) {
+    if index < records.len() {
+        records.remove(index);
+        println!("Record at index {} deleted successfully!", index);
+    } else {
+        println!("Invalid index. No record deleted.");
+    }
+}
