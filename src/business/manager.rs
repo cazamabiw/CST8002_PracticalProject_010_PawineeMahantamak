@@ -21,3 +21,8 @@ pub fn display_records(records: &Vec<NaturalGasLiquidExport>, limit: usize) {
     }
     println!("Displayed {} records.", limit);
 }
+
+pub fn create_record(records: &mut Vec<NaturalGasLiquidExport>, new_record: NaturalGasLiquidExport) {
+    records.push(new_record);
+    println!("New record added successfully!");
+}
