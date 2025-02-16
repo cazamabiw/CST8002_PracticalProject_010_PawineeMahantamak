@@ -1,8 +1,8 @@
 /* 
 Author: Pawinee Mahantamak
-Course: CST8002 - Practical Project 1
+Course: CST8002 - Practical Project 2
 Professor: Stanley Pieda
-Due Date: 2025-01-26
+Due Date: 2025-02-16
 */
 
 /* Description:
@@ -18,14 +18,21 @@ pub struct NaturalGasLiquidExport {
     product: String,
     origin: String,
     destination: String,
-    mode_of_transportation: String,
+    mode_of_transport: String,
     volume_m3: f64,
     volume_bbl: f64,
     value_cad: f64,
     value_usd: f64,
-    price_cents_per_l: f64,
-    price_cents_per_gallon: f64,
+    price_per_l_cents: f64,
+    price_per_gal_cents: f64,
 }
+
+// Constants for dataset column names
+pub const NATURALGASLIQUID_HEADERS: [&str; 13] = [
+    "Period", "Year", "Month", "Product", "Origin", "Destination",
+    "Mode of Tr.", "Volume (m³)", "Volume (bbl)", "Value (CN$)",
+    "Value (US$)", "Price (CN cents/L)", "Price (US cents/gallon)"
+];
 
 impl NaturalGasLiquidExport {
     // Constructor
@@ -36,13 +43,13 @@ impl NaturalGasLiquidExport {
         product: String,
         origin: String,
         destination: String,
-        mode_of_transportation: String,
+        mode_of_transport: String,
         volume_m3: f64,
         volume_bbl: f64,
         value_cad: f64,
         value_usd: f64,
-        price_cents_per_l: f64,
-        price_cents_per_gallon: f64,
+        price_per_l_cents: f64,
+        price_per_gal_cents: f64,
     ) -> Self {
         Self {
             period,
@@ -51,13 +58,13 @@ impl NaturalGasLiquidExport {
             product,
             origin,
             destination,
-            mode_of_transportation,
+            mode_of_transport,
             volume_m3,
             volume_bbl,
             value_cad,
             value_usd,
-            price_cents_per_l,
-            price_cents_per_gallon,
+            price_per_l_cents,
+            price_per_gal_cents,
         }
     }
 
@@ -86,8 +93,8 @@ impl NaturalGasLiquidExport {
         &self.destination
     }
 
-    pub fn mode_of_transportation(&self) -> &str {
-        &self.mode_of_transportation
+    pub fn mode_of_transport(&self) -> &str {
+        &self.mode_of_transport
     }
 
     pub fn volume_m3(&self) -> f64 {
@@ -106,12 +113,12 @@ impl NaturalGasLiquidExport {
         self.value_usd
     }
 
-    pub fn price_cents_per_l(&self) -> f64 {
-        self.price_cents_per_l
+    pub fn price_per_l_cents(&self) -> f64 {
+        self.price_per_l_cents
     }
 
-    pub fn price_cents_per_gallon(&self) -> f64 {
-        self.price_cents_per_gallon
+    pub fn price_per_gal_cents(&self) -> f64 {
+        self.price_per_gal_cents
     }
 
     // Setters
@@ -139,8 +146,8 @@ impl NaturalGasLiquidExport {
         self.destination = destination;
     }
 
-    pub fn set_mode_of_transportation(&mut self, mode_of_transportation: String) {
-        self.mode_of_transportation = mode_of_transportation;
+    pub fn set_mode_of_transport(&mut self, mode_of_transport: String) {
+        self.mode_of_transport = mode_of_transport;
     }
 
     pub fn set_volume_m3(&mut self, volume_m3: f64) {
@@ -159,11 +166,11 @@ impl NaturalGasLiquidExport {
         self.value_usd = value_usd;
     }
 
-    pub fn set_price_cents_per_l(&mut self, price_cents_per_l: f64) {
-        self.price_cents_per_l = price_cents_per_l;
+    pub fn set_price_per_l_cents(&mut self, price_per_l_cents: f64) {
+        self.price_per_l_cents = price_per_l_cents;
     }
 
-    pub fn set_price_cents_per_gallon(&mut self, price_cents_per_gallon: f64) {
-        self.price_cents_per_gallon = price_cents_per_gallon;
+    pub fn set_price_per_gal_cents(&mut self, price_per_gal_cents: f64) {
+        self.price_per_gal_cents = price_per_gal_cents;
     }
 }
