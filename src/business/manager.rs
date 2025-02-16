@@ -26,3 +26,12 @@ pub fn create_record(records: &mut Vec<NaturalGasLiquidExport>, new_record: Natu
     records.push(new_record);
     println!("New record added successfully!");
 }
+
+pub fn edit_record(records: &mut Vec<NaturalGasLiquidExport>, index: usize, updated_record: NaturalGasLiquidExport) {
+    if index < records.len() {
+        records[index] = updated_record;
+        println!("Record at index {} updated successfully!", index);
+    } else {
+        println!("Invalid index. No record updated.");
+    }
+}
