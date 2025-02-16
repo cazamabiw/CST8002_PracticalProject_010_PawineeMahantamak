@@ -15,3 +15,9 @@ pub fn reload_data(file_path: &str) -> Result<Vec<NaturalGasLiquidExport>, Box<d
     println!("Successfully reloaded {} records!", records.len());
     Ok(records)
 }
+pub fn display_records(records: &Vec<NaturalGasLiquidExport>, limit: usize) {
+    for (i, record) in records.iter().take(limit).enumerate() {
+        println!("Record {}: {:?}", i + 1, record);
+    }
+    println!("Displayed {} records.", limit);
+}
