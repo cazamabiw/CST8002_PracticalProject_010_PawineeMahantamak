@@ -5,11 +5,20 @@ Professor: Stanley Pieda
 Due Date: 2025-02-16
 */
 
+use super::export_record::ExportRecord;
+
 /* Description:
 This struct holds data about natural gas liquid exports. It includes fields for the period, year, 
 month, product, origin, destination, transportation mode, and various financial and volume details. 
 It provides methods for creating a new record, accessing field values, and setting or updating those fields.
+
+It implements polymorphism by overriding the `display` method from `ExportRecord`.
+SOLID Principles Applied
+Single Responsibility Principle (S) – This struct is only responsible for data storage.
+Open/Closed Principle (O) – It extends behavior without modifying the `ExportRecord` trait.
+ependency Inversion Principle (D) – The program depends on abstractions (`ExportRecord`), not concrete types.
 */
+
 #[derive(Debug)]
 pub struct NaturalGasLiquidExport {
     period: String,
@@ -172,5 +181,17 @@ impl NaturalGasLiquidExport {
 
     pub fn set_price_per_gal_cents(&mut self, price_per_gal_cents: f64) {
         self.price_per_gal_cents = price_per_gal_cents;
+    }
+}
+
+
+// Implementing ExportRecord Trait for Polymorphism
+impl ExportRecord for NaturalGasLiquidExport {
+    /// Provides a formatted string for display
+    fn display(&self) -> String {
+        format!(
+            "Period: {}, Year: {}, Month: {}, Product: {}, Origin: {}, Destination: {}",
+            self.period, self.year, self.month, self.product, self.origin, self.destination
+        )
     }
 }
