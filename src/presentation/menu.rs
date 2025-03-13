@@ -33,7 +33,7 @@ use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 /// * Calls appropriate business layer functions for each operation.
 /// * Handles invalid input gracefully.
 pub fn show_menu(file_path: &str) {
-    let records = load_initial_data(file_path).unwrap();
+    let records: &mut Vec<NaturalGasLiquidExport> = load_initial_data(file_path).unwrap();
 
     loop {
         println!("\n Program by Pawinee Mahantamak");
