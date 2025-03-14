@@ -30,11 +30,12 @@ fn main() {
    
     println!("Author: {}", MY_FULL_NAME);
     /// Initialize dataset (load up to 100 records)
-    let mut records: Vec<NaturalGasLiquidExport> = match read_csv_file(file_path) {
-        Ok(mut records) => {
-            records.truncate(100); // Limit to 100 records
-            println!("Successfully loaded {} records!", records.len());
-            records
+    let mut records: Vec<NaturalGasLiquidExport> = match read_csv_file(file_path,"full") {
+        Ok(boxed_records) => {
+            boxed_records.into_iter()
+                .filter_map(|record| record.as_any().downcast_ref::<NaturalGasLiquidExport>().cloned())
+                .take(100) // Limit to first 100 records
+                .collect()
         }
         Err(e) => {
             eprintln!("Error loading dataset: {}", e);

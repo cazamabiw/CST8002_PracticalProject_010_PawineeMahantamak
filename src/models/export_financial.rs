@@ -32,4 +32,8 @@ impl ExportRecord for ExportFinancial {
             self.period, self.year, self.product, self.value_cad, self.value_usd
         )
     }
+    
+    fn as_any(&self) -> &dyn std::any::Any {
+        todo!()
+    }
 }

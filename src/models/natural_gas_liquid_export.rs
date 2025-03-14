@@ -5,6 +5,8 @@ Professor: Stanley Pieda
 Due Date: 2025-02-16
 */
 
+use std::any::Any;
+
 use super::export_record::ExportRecord;
 
 /* Description:
@@ -19,7 +21,7 @@ Open/Closed Principle (O) – It extends behavior without modifying the `ExportR
 ependency Inversion Principle (D) – The program depends on abstractions (`ExportRecord`), not concrete types.
 */
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct NaturalGasLiquidExport {
     period: String,
     year: u16,
@@ -193,5 +195,8 @@ impl ExportRecord for NaturalGasLiquidExport {
             "Period: {}, Year: {}, Month: {}, Product: {}, Origin: {}, Destination: {}",
             self.period, self.year, self.month, self.product, self.origin, self.destination
         )
+    }
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }

@@ -31,4 +31,8 @@ impl ExportRecord for ExportSummary {
             self.period, self.year, self.product, self.volume_m3
         )
     }
+    
+    fn as_any(&self) -> &dyn std::any::Any {
+        todo!()
+    }
 }

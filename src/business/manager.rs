@@ -15,6 +15,7 @@ This module provides functions for managing `NaturalGasLiquidExport` records, in
 - Deleting records
 */
 use std::error::Error;
+use crate::models::export_record::ExportRecord;
 use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 use crate::persistence::csv_reader::read_csv_file;
 
@@ -26,8 +27,14 @@ static mut RECORD_DATA: Option<Vec<NaturalGasLiquidExport>> = None;
 pub fn load_initial_data(file_path: &str) -> Result<&'static mut Vec<NaturalGasLiquidExport>, Box<dyn Error>> {
     unsafe {
         if RECORD_DATA.is_none() {
-            let mut records = read_csv_file(file_path)?;
-            records.truncate(100); // Load only first 100 records initially
+            let boxed_records: Vec<Box<dyn ExportRecord>> = read_csv_file(file_path, "full")?;
+            
+            // Convert Box<dyn ExportRecord> to NaturalGasLiquidExport
+            let mut records: Vec<NaturalGasLiquidExport> = boxed_records.into_iter()
+                .filter_map(|record| record.as_any().downcast_ref::<NaturalGasLiquidExport>().cloned())
+                .collect();
+            
+            records.truncate(100); // Load only the first 100 records
             RECORD_DATA = Some(records);
         }
         Ok(RECORD_DATA.as_mut().unwrap())
@@ -35,14 +42,15 @@ pub fn load_initial_data(file_path: &str) -> Result<&'static mut Vec<NaturalGasL
 }
 
 /// Displays records from memory.
-pub fn display_records(records: &Vec<NaturalGasLiquidExport>, limit: usize) {
+pub fn display_records(records: &Vec<Box<dyn ExportRecord>>, limit: usize) {
     if records.is_empty() {
         println!("No records available.");
     } else {
         let display_count = limit.min(records.len());
         for (i, record) in records.iter().take(display_count).enumerate() {
-            println!("Record {}: {:?}", i+1, record);
+            println!("Record {}: {}", i + 1, record.display());
 
+            // Show author name after every 10 records
             if (i + 1) % 10 == 0 {
                 println!("Program by Pawinee Mahantamak");
             }

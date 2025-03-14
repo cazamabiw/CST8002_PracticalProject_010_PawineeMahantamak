@@ -19,6 +19,7 @@ liquid export dataset. It allows users to:
 
 use std::io::{self, Write};
 use crate::business::manager::*;
+use crate::persistence::csv_reader::read_csv_file;
 use crate::persistence::csv_writer::write_csv_file;
 use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 
@@ -33,7 +34,8 @@ use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 /// * Calls appropriate business layer functions for each operation.
 /// * Handles invalid input gracefully.
 pub fn show_menu(file_path: &str) {
-    let records: &mut Vec<NaturalGasLiquidExport> = load_initial_data(file_path).unwrap();
+    let mut record_type = String::from("full"); // Default to full records
+    let mut records = read_csv_file(file_path, &record_type).expect("Failed to load data");
 
     loop {
         println!("\n Program by Pawinee Mahantamak");
@@ -51,13 +53,39 @@ pub fn show_menu(file_path: &str) {
         io::stdin().read_line(&mut choice).unwrap();
         match choice.trim() {
             "1" => {
-                println!("Enter number of records to display: ");
+                println!("Select record type:");
+                println!("1. Full Record");
+                println!("2. Summary Record");
+                println!("3. Financial Record");
+                print!("Enter choice (1/2/3): ");
+                io::stdout().flush().unwrap();
+
+                let mut record_choice = String::new();
+                io::stdin().read_line(&mut record_choice).unwrap();
+
+                record_type = match record_choice.trim() {
+                    "1" => "full".to_string(),
+                    "2" => "summary".to_string(),
+                    "3" => "financial".to_string(),
+                    _ => {
+                        println!("Invalid selection. Defaulting to Full Record.");
+                        "full".to_string()
+                    }
+                };
+
+                // Reload data with selected record type
+                records = read_csv_file(file_path, &record_type).expect("Failed to reload data");
+                println!("Loaded records as: {}", record_type);
+                    // Ask the user how many records they want to display
+                println!("Enter the number of records to display: ");
                 let mut num_records = String::new();
                 io::stdin().read_line(&mut num_records).unwrap();
+
                 if let Ok(limit) = num_records.trim().parse::<usize>() {
-                    display_records(records, limit);
+                display_records(&records, limit);
                 } else {
-                    println!("Invalid number.");
+                println!("Invalid number. Showing all records.");
+                display_records(&records, records.len()); // Default to showing all if invalid input
                 }
             }
             "2" => {
@@ -100,9 +128,15 @@ pub fn show_menu(file_path: &str) {
                 }
             }
             "5" => {
-                match write_csv_file(records) {
-                    Ok(output_file) => println!("Data saved to {}", output_file),
-                    Err(e) => println!("Error saving data: {}", e),
+                // Convert Vec<Box<dyn ExportRecord>> to Vec<NaturalGasLiquidExport>
+                let converted_records: Vec<NaturalGasLiquidExport> = records.iter()
+                .filter_map(|record| record.as_any().downcast_ref::<NaturalGasLiquidExport>().cloned())
+                .collect();
+
+                // Save data
+                match write_csv_file(&converted_records) {
+                Ok(output_file) => println!("Data saved to {}", output_file),
+                Err(e) => println!("Error saving data: {}", e),
                 }
             }
             "6" => {
@@ -121,9 +155,7 @@ pub fn show_menu(file_path: &str) {
 /// # Behavior
 /// * Asks the user for each field's value.
 /// * Converts numerical fields safely, using default values if input is invalid.
-fn create_record_interactively() -> NaturalGasLiquidExport {
-    let mut input = String::new();
-    
+fn create_record_interactively() -> NaturalGasLiquidExport {    
     fn prompt(text: &str) -> String {
         let mut input = String::new();
         print!("{}", text);
