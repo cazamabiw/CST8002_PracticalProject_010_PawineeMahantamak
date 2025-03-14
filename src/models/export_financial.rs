@@ -11,6 +11,7 @@ The ExportFinancial struct focuses on financial details of exports.
 It implements the ExportRecord trait for a custom display format.
 Applying SOLID Principles:
 - Open/Closed Principle (O): This new type extends behavior without modifying base classes.
+- Dependency Inversion Principle (D): Depends on the abstract `ExportRecord` trait rather than concrete implementations.
 */
 
 use std::any::Any;
@@ -28,6 +29,7 @@ pub struct ExportFinancial {
     pub value_usd: f64,
 }
 impl ExportFinancial {
+    /// Creates a financial record from a full export record.
     pub fn from_full_record(record: &NaturalGasLiquidExport) -> Self {
         ExportFinancial {
             period: record.period().to_string(),
@@ -46,7 +48,7 @@ impl ExportRecord for ExportFinancial {
             self.period, self.year, self.product, self.value_cad, self.value_usd
         )
     }
-    
+    /// Enables dynamic casting for polymorphism.    
     fn as_any(&self) -> &dyn Any {
         self
     }

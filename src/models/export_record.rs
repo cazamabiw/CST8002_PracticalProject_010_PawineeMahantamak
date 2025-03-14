@@ -7,7 +7,7 @@ Due Date: 2025-03-16
 
 /* 
 Description:
-The `ExportRecord` trait serves as a base interface for different types of export records. 
+The `ExportRecord` trait serves as a base interface/super class for different types of export records. 
 This enables polymorphism by allowing multiple implementations of record display formats.
 Applying SOLID Principles:
 - Open/Closed Principle (O): New record types can be added without modifying existing code.
@@ -16,8 +16,10 @@ Applying SOLID Principles:
 
 use std::any::Any;
 
+/// Defines an interface/super class for all export records.
 pub trait ExportRecord {
     /// A method that must be implemented by all record types to define how they should be displayed.
     fn display(&self) -> String;
-    fn as_any(&self) -> &dyn Any; //Required for downcasting
+    /// Enables runtime type checking for downcasting in polymorphic operations.
+    fn as_any(&self) -> &dyn Any;
 }

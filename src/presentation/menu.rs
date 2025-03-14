@@ -75,13 +75,13 @@ pub fn show_menu(file_path: &str) {
                     }
                 };
 
-                //records = read_csv_file(file_path, &record_type).expect("Failed to reload data");
                 println!("Loaded records as: {}", record_type);
-                    // Ask the user how many records they want to display
+                // Ask the user how many records they want to display
                 println!("Enter the number of records to display: ");
                 let mut num_records = String::new();
                 io::stdin().read_line(&mut num_records).unwrap();
 
+                // **Convert records to trait objects for polymorphic display**
                 let export_records: Vec<Box<dyn ExportRecord>> = records
                 .iter() // Iterate over NaturalGasLiquidExport records
                 .map(|record| Box::new(record.clone()) as Box<dyn ExportRecord>) // Convert each record to trait object

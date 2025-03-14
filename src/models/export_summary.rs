@@ -11,6 +11,7 @@ The ExportSummary struct provides a high-level summary of export data.
 It overrides the display method to show key summary details.
 Applying SOLID Principles:
 - Open/Closed Principle (O): Extends the ExportRecord functionality without modifying it.
+- Dependency Inversion Principle (D): Depends on the abstract `ExportRecord` trait rather than concrete implementations.
 */
 
 use std::any::Any;
@@ -28,6 +29,7 @@ pub struct ExportSummary {
 }
 
 impl ExportSummary {
+    /// Creates a summary record from a full export record.
     pub fn from_full_record(record: &NaturalGasLiquidExport) -> Self {
         ExportSummary {
             period: record.period().to_string(),
@@ -45,7 +47,7 @@ impl ExportRecord for ExportSummary {
             self.period, self.year, self.product, self.volume_m3
         )
     }
-    
+     /// Enables runtime type checking for downcasting.   
     fn as_any(&self) -> &dyn Any {
         self
     }

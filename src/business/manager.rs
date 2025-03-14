@@ -13,6 +13,11 @@ This module provides functions for managing `NaturalGasLiquidExport` records, in
 - Creating new records
 - Editing existing records
 - Deleting records
+
+# SOLID Principles Applied:
+- Single Responsibility Principle): Each function has a distinct responsibility (loading, displaying, modifying records).
+- Open/Closed Principle): Supports multiple record formats (`full`, `summary`, `financial`) without modifying the core logic.
+- Dependency Inversion Principle): Depends on the abstract `ExportRecord` trait instead of concrete types.
 */
 use std::error::Error;
 use crate::models::export_financial::ExportFinancial;
@@ -26,12 +31,15 @@ static mut RECORD_DATA: Option<Vec<NaturalGasLiquidExport>> = None;
 
 /// Loads data on first run, and persists updates in memory.
 /// Does NOT reset when adding, editing, or deleting records.
+/// - Uses polymorphism (`ExportRecord` trait) to allow different record formats.
+/// - Only reloads if data is not already in memory.
+/// - Converts `Box<dyn ExportRecord>` back to `NaturalGasLiquidExport`
 pub fn load_initial_data(file_path: &str) -> Result<&'static mut Vec<NaturalGasLiquidExport>, Box<dyn Error>> {
     unsafe {
         if RECORD_DATA.is_none() {
             let boxed_records: Vec<Box<dyn ExportRecord>> = read_csv_file(file_path)?;
             
-            // Convert Box<dyn ExportRecord> to NaturalGasLiquidExport
+            // Convert polymorphic trait objects into concrete struct instances
             let mut records: Vec<NaturalGasLiquidExport> = boxed_records.into_iter()
                 .filter_map(|record| record.as_any().downcast_ref::<NaturalGasLiquidExport>().cloned())
                 .collect();
@@ -44,7 +52,9 @@ pub fn load_initial_data(file_path: &str) -> Result<&'static mut Vec<NaturalGasL
 }
 
 
-/// Displays records from memory.
+/// Displays records from memory with dynamic dispatch (polymorphism).
+/// - Uses `as_any().downcast_ref()` to convert `ExportRecord` into its concrete subtype.
+/// - Supports full, summary, and financial views without modifying core logic.
 pub fn display_records(records: &Vec<Box<dyn ExportRecord>>, limit: usize,record_type: &str) {
     if records.is_empty() {
         println!("No records available.");

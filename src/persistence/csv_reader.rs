@@ -27,10 +27,11 @@ use crate::models::{export_record::ExportRecord, natural_gas_liquid_export::{Nat
 /// * `file_path` - The path to the CSV file.
 ///
 /// # Returns
-/// * `Ok(Vec<NaturalGasLiquidExport>)` - A vector of successfully parsed records.
+/// * `Ok(Vec<Box<dyn ExportRecord>>)` - A vector of parsed records implementing `ExportRecord`.
 /// * `Err(Box<dyn Error>)` - An error if file reading or parsing fails.
 ///
 /// # Behavior
+/// * Uses polymorphism to store different export record types.
 /// * Skips malformed records that do not match expected column count.
 /// * Logs errors but continues reading the remaining records.
 pub fn read_csv_file(file_path: &str) -> Result<Vec<Box<dyn ExportRecord>>, Box<dyn Error>> {
