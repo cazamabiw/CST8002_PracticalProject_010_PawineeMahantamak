@@ -16,6 +16,9 @@ Comprehensive unit test covering:
 */
 #[cfg(test)]
 mod tests {
+    use crate::models::export_financial::ExportFinancial;
+    use crate::models::export_record::ExportRecord;
+    use crate::models::export_summary::ExportSummary;
     use crate::persistence::csv_reader::read_csv_file;
     use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
     use crate::business::manager::{add_record, delete_record, edit_record, load_initial_data};
@@ -109,5 +112,51 @@ mod tests {
         // Test handling of a missing file
         let result = read_csv_file(invalid_file);
         assert!(result.is_err(), "Should return an error when file is missing!");
+    }
+
+    
+    /// Polymorphism Test
+    /// - Ensures that different record types (`ExportSummary`, `ExportFinancial`) properly override `display()`.
+    #[test]
+    fn test_polymorphic_display() {
+        // Create a sample full export record
+        let record = NaturalGasLiquidExport::new(
+            "03-01-2025".to_string(),
+            2025,
+            "March".to_string(),
+            "Ethane".to_string(),
+            "Alberta".to_string(),
+            "PADD III".to_string(),
+            "Pipeline".to_string(),
+            7000.0,
+            4000.0,
+            20000.0,
+            16000.0,
+            40.0,
+            100.0,
+        );
+        // Convert the full record to a `Summary` and `Financial` export record
+        let summary_record: Box<dyn ExportRecord> = Box::new(ExportSummary::from_full_record(&record));
+        let financial_record: Box<dyn ExportRecord> = Box::new(ExportFinancial::from_full_record(&record));
+        // Ensure `display()` method is correctly overridden for summary records
+        assert!(
+            summary_record.display().contains("[Summary]"),
+            "ExportSummary display format is incorrect!"
+            
+        );
+        // Ensure `display()` method is correctly overridden for financial records
+        assert!(
+            financial_record.display().contains("[Financial]"),
+            "ExportFinancial display format is incorrect!"
+        );
+        // Print outputs to verify correct display formatting
+        println!("========================================================================================");
+        println!("Full Display Output: {}", record.display());
+        println!("Summary Display Output: {}", summary_record.display());
+        println!("Financial Display Output: {}", financial_record.display());
+        println!("Polymorphism test passed: Summary and Financial records displayed correctly.");
+        println!("========================================================================================");
+        println!("Author: Pawinee Mahantamak");
+        println!("========================================================================================");
     }
 }
