@@ -13,7 +13,11 @@ Applying SOLID Principles:
 - Open/Closed Principle (O): Extends the ExportRecord functionality without modifying it.
 */
 
+use std::any::Any;
+
 use crate::models::export_record::ExportRecord;
+
+use super::natural_gas_liquid_export::NaturalGasLiquidExport;
 
 #[derive(Debug)]
 pub struct ExportSummary {
@@ -23,6 +27,16 @@ pub struct ExportSummary {
     pub volume_m3: f64,
 }
 
+impl ExportSummary {
+    pub fn from_full_record(record: &NaturalGasLiquidExport) -> Self {
+        ExportSummary {
+            period: record.period().to_string(),
+            year: record.year(),
+            product: record.product().to_string(),
+            volume_m3: record.volume_m3(),
+        }
+    }
+}
 impl ExportRecord for ExportSummary {
     /// Returns a summary view of the export record.
     fn display(&self) -> String {
@@ -32,7 +46,7 @@ impl ExportRecord for ExportSummary {
         )
     }
     
-    fn as_any(&self) -> &dyn std::any::Any {
-        todo!()
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }

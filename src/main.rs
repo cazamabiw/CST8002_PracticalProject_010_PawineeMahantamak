@@ -30,7 +30,7 @@ fn main() {
    
     println!("Author: {}", MY_FULL_NAME);
     /// Initialize dataset (load up to 100 records)
-    let mut records: Vec<NaturalGasLiquidExport> = match read_csv_file(file_path,"full") {
+    let mut records: Vec<NaturalGasLiquidExport> = match read_csv_file(file_path) {
         Ok(boxed_records) => {
             boxed_records.into_iter()
                 .filter_map(|record| record.as_any().downcast_ref::<NaturalGasLiquidExport>().cloned())

@@ -15,7 +15,9 @@ This module provides functions for managing `NaturalGasLiquidExport` records, in
 - Deleting records
 */
 use std::error::Error;
+use crate::models::export_financial::ExportFinancial;
 use crate::models::export_record::ExportRecord;
+use crate::models::export_summary::ExportSummary;
 use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 use crate::persistence::csv_reader::read_csv_file;
 
@@ -27,7 +29,7 @@ static mut RECORD_DATA: Option<Vec<NaturalGasLiquidExport>> = None;
 pub fn load_initial_data(file_path: &str) -> Result<&'static mut Vec<NaturalGasLiquidExport>, Box<dyn Error>> {
     unsafe {
         if RECORD_DATA.is_none() {
-            let boxed_records: Vec<Box<dyn ExportRecord>> = read_csv_file(file_path, "full")?;
+            let boxed_records: Vec<Box<dyn ExportRecord>> = read_csv_file(file_path)?;
             
             // Convert Box<dyn ExportRecord> to NaturalGasLiquidExport
             let mut records: Vec<NaturalGasLiquidExport> = boxed_records.into_iter()
@@ -41,15 +43,39 @@ pub fn load_initial_data(file_path: &str) -> Result<&'static mut Vec<NaturalGasL
     }
 }
 
+
 /// Displays records from memory.
-pub fn display_records(records: &Vec<Box<dyn ExportRecord>>, limit: usize) {
+pub fn display_records(records: &Vec<Box<dyn ExportRecord>>, limit: usize,record_type: &str) {
     if records.is_empty() {
         println!("No records available.");
     } else {
         let display_count = limit.min(records.len());
         for (i, record) in records.iter().take(display_count).enumerate() {
-            println!("Record {}: {}", i + 1, record.display());
-
+        // Convert record dynamically based on type
+        match record_type {
+            "full" => {
+                    println!("Record {}: {}", i + 1, record.display());
+            }
+            "summary" => {
+                if let Some(full_record) = record.as_any().downcast_ref::<NaturalGasLiquidExport>() {
+                    let summary_record = ExportSummary::from_full_record(full_record);
+                    println!("Record {}: {}", i + 1, summary_record.display());
+                } else {
+                    println!("Error: Cannot convert to ExportSummary.");
+                }
+            }
+            "financial" => {
+                if let Some(full_record) = record.as_any().downcast_ref::<NaturalGasLiquidExport>() {
+                    let financial_record = ExportFinancial::from_full_record(full_record);
+                    println!("Record {}: {}", i + 1, financial_record.display());
+                } else {
+                    println!("Error: Cannot convert to ExportFinancial.");
+                }
+            }
+            _ => {
+                println!("Invalid record type. Defaulting to Full Record.");
+            }
+        }
             // Show author name after every 10 records
             if (i + 1) % 10 == 0 {
                 println!("Program by Pawinee Mahantamak");

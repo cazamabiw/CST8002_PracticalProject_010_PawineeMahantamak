@@ -13,7 +13,11 @@ Applying SOLID Principles:
 - Open/Closed Principle (O): This new type extends behavior without modifying base classes.
 */
 
+use std::any::Any;
+
 use crate::models::export_record::ExportRecord;
+
+use super::natural_gas_liquid_export::NaturalGasLiquidExport;
 
 #[derive(Debug)]
 pub struct ExportFinancial {
@@ -23,7 +27,17 @@ pub struct ExportFinancial {
     pub value_cad: f64,
     pub value_usd: f64,
 }
-
+impl ExportFinancial {
+    pub fn from_full_record(record: &NaturalGasLiquidExport) -> Self {
+        ExportFinancial {
+            period: record.period().to_string(),
+            year: record.year(),
+            product: record.product().to_string(),
+            value_cad: record.value_cad(),
+            value_usd: record.value_usd(),
+        }
+    }
+}
 impl ExportRecord for ExportFinancial {
     /// Returns a financial summary of the export record.
     fn display(&self) -> String {
@@ -33,7 +47,7 @@ impl ExportRecord for ExportFinancial {
         )
     }
     
-    fn as_any(&self) -> &dyn std::any::Any {
-        todo!()
+    fn as_any(&self) -> &dyn Any {
+        self
     }
 }

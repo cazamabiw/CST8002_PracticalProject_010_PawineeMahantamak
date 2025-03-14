@@ -19,6 +19,7 @@ liquid export dataset. It allows users to:
 
 use std::io::{self, Write};
 use crate::business::manager::*;
+use crate::models::export_record::ExportRecord;
 use crate::persistence::csv_reader::read_csv_file;
 use crate::persistence::csv_writer::write_csv_file;
 use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
@@ -35,8 +36,9 @@ use crate::models::natural_gas_liquid_export::NaturalGasLiquidExport;
 /// * Handles invalid input gracefully.
 pub fn show_menu(file_path: &str) {
     let mut record_type = String::from("full"); // Default to full records
-    let mut records = read_csv_file(file_path, &record_type).expect("Failed to load data");
-
+    //let mut records = read_csv_file(file_path, &record_type).expect("Failed to load data");
+    
+    let records: &mut Vec<NaturalGasLiquidExport> = load_initial_data(file_path).unwrap();
     loop {
         println!("\n Program by Pawinee Mahantamak");
         println!("\n=== Natural Gas Liquid Export Management ===");
@@ -73,19 +75,23 @@ pub fn show_menu(file_path: &str) {
                     }
                 };
 
-                // Reload data with selected record type
-                records = read_csv_file(file_path, &record_type).expect("Failed to reload data");
+                //records = read_csv_file(file_path, &record_type).expect("Failed to reload data");
                 println!("Loaded records as: {}", record_type);
                     // Ask the user how many records they want to display
                 println!("Enter the number of records to display: ");
                 let mut num_records = String::new();
                 io::stdin().read_line(&mut num_records).unwrap();
 
+                let export_records: Vec<Box<dyn ExportRecord>> = records
+                .iter() // Iterate over NaturalGasLiquidExport records
+                .map(|record| Box::new(record.clone()) as Box<dyn ExportRecord>) // Convert each record to trait object
+                .collect();
+
                 if let Ok(limit) = num_records.trim().parse::<usize>() {
-                display_records(&records, limit);
+                display_records(&export_records, limit,&record_type);
                 } else {
                 println!("Invalid number. Showing all records.");
-                display_records(&records, records.len()); // Default to showing all if invalid input
+                display_records(&export_records, records.len(),"full"); // Default to showing all if invalid input
                 }
             }
             "2" => {
@@ -128,15 +134,9 @@ pub fn show_menu(file_path: &str) {
                 }
             }
             "5" => {
-                // Convert Vec<Box<dyn ExportRecord>> to Vec<NaturalGasLiquidExport>
-                let converted_records: Vec<NaturalGasLiquidExport> = records.iter()
-                .filter_map(|record| record.as_any().downcast_ref::<NaturalGasLiquidExport>().cloned())
-                .collect();
-
-                // Save data
-                match write_csv_file(&converted_records) {
-                Ok(output_file) => println!("Data saved to {}", output_file),
-                Err(e) => println!("Error saving data: {}", e),
+                match write_csv_file(records) {
+                    Ok(output_file) => println!("Data saved to {}", output_file),
+                    Err(e) => println!("Error saving data: {}", e),               
                 }
             }
             "6" => {
