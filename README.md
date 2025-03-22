@@ -3,7 +3,7 @@
 ## Course: CST8002 - Programming Language Research Project  
 **Author:** Pawinee Mahantamak  
 **Professor:** Stanley Pieda  
-**Project Type:** Practical project
+**Project Type:** Practical project  
 **Language:** Rust
 
 ---
@@ -38,5 +38,32 @@ In **Practical 2**, the project was refactored into a **fully structured N-Layer
 3. **Enabled adding, editing, and deleting records in memory**  
 4. **Persisted data back to a CSV file using UUID filenames**  
 5. **Implemented unit tests for core functions**  
+
+---
+
+
+## Practical 3: Object-Oriented Design & Polymorphism
+In **Practical 3**, the code was extended to apply **Object-Oriented Programming (OOP) principles** using traits and **polymorphism** in Rust. The project now supports multiple views of the export data (full, summary, and financial) by defining a trait and implementing it across different record types.
+
+1. **Defined the ExportRecord trait as an abstract interface (superclass) with a display() method and dynamic type support via as_any()**
+2. **Implemented three concrete record types that override the trait methods:**
+  - NaturalGasLiquidExport – full record view
+  - ExportSummary – summarized data (e.g., period, product, volume)
+  - ExportFinancial – financial data (e.g., CAD and USD values)
+
+3. **Refactored the display functionality to use dynamic dispatch (Box<dyn ExportRecord>) for runtime polymorphism**
+
+4. **Enhanced the menu to allow users to select record type (full, summary, financial) when viewing data**
+
+5. **Used downcasting via as_any() to convert trait objects into concrete types inside the manager.rs module**
+
+6. **Maintained clean separation of concerns by following the N-Layered Architecture (presentation, business, persistence, model)**
+
+7. **Applied SOLID Principles:**
+- **Single Responsibility Principle:** Each struct (ExportSummary, ExportFinancial, etc.) is focused on one specific view
+- **Open/Closed Principle:** New record types were added without modifying existing logic
+- **Liskov Substitution Principle:** Trait objects are used interchangeably across modules
+- **Interface Segregation Principle:** ExportRecord trait includes only essential methods
+- **Dependency Inversion Principle:** Business logic in manager.rs relies on abstractions (ExportRecord), not concrete implementations
 
 
